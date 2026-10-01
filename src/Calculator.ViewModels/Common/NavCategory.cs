@@ -245,23 +245,6 @@ namespace CalculatorApp.ViewModel.Common
         internal static readonly NavCategoryInitializer[] CategoryManifest = new[]
         {
             new NavCategoryInitializer { ViewMode = ViewMode.Standard, SerializationId = StandardId, FriendlyName = "Standard", NameResourceKey = "StandardMode", Glyph = "\uE8EF", GroupType = CategoryGroupType.Calculator, VirtualKey = MyVirtualKey.Number1, AccessKey = "1", SupportsNegative = SupportsAll },
-            new NavCategoryInitializer { ViewMode = ViewMode.Scientific, SerializationId = ScientificId, FriendlyName = "Scientific", NameResourceKey = "ScientificMode", Glyph = "\uF196", GroupType = CategoryGroupType.Calculator, VirtualKey = MyVirtualKey.Number2, AccessKey = "2", SupportsNegative = SupportsAll },
-            new NavCategoryInitializer { ViewMode = ViewMode.Graphing, SerializationId = GraphingId, FriendlyName = "Graphing", NameResourceKey = "GraphingCalculatorMode", Glyph = "\uF770", GroupType = CategoryGroupType.Calculator, VirtualKey = MyVirtualKey.Number3, AccessKey = "3", SupportsNegative = SupportsAll },
-            new NavCategoryInitializer { ViewMode = ViewMode.Programmer, SerializationId = ProgrammerId, FriendlyName = "Programmer", NameResourceKey = "ProgrammerMode", Glyph = "\uECCE", GroupType = CategoryGroupType.Calculator, VirtualKey = MyVirtualKey.Number4, AccessKey = "4", SupportsNegative = SupportsAll },
-            new NavCategoryInitializer { ViewMode = ViewMode.Date, SerializationId = DateId, FriendlyName = "Date", NameResourceKey = "DateCalculationMode", Glyph = "\uE787", GroupType = CategoryGroupType.Calculator, VirtualKey = MyVirtualKey.Number5, AccessKey = "5", SupportsNegative = SupportsAll },
-            new NavCategoryInitializer { ViewMode = ViewMode.Currency, SerializationId = CurrencyId, FriendlyName = "Currency", NameResourceKey = "CategoryName_Currency", Glyph = "\uEB0D", GroupType = CategoryGroupType.Converter, VirtualKey = MyVirtualKey.None, AccessKey = null, SupportsNegative = PositiveOnly },
-            new NavCategoryInitializer { ViewMode = ViewMode.Volume, SerializationId = VolumeId, FriendlyName = "Volume", NameResourceKey = "CategoryName_Volume", Glyph = "\uF1AA", GroupType = CategoryGroupType.Converter, VirtualKey = MyVirtualKey.None, AccessKey = null, SupportsNegative = PositiveOnly },
-            new NavCategoryInitializer { ViewMode = ViewMode.Length, SerializationId = LengthId, FriendlyName = "Length", NameResourceKey = "CategoryName_Length", Glyph = "\uECC6", GroupType = CategoryGroupType.Converter, VirtualKey = MyVirtualKey.None, AccessKey = null, SupportsNegative = PositiveOnly },
-            new NavCategoryInitializer { ViewMode = ViewMode.Weight, SerializationId = WeightId, FriendlyName = "Weight and Mass", NameResourceKey = "CategoryName_Weight", Glyph = "\uF4C1", GroupType = CategoryGroupType.Converter, VirtualKey = MyVirtualKey.None, AccessKey = null, SupportsNegative = PositiveOnly },
-            new NavCategoryInitializer { ViewMode = ViewMode.Temperature, SerializationId = TemperatureId, FriendlyName = "Temperature", NameResourceKey = "CategoryName_Temperature", Glyph = "\uE7A3", GroupType = CategoryGroupType.Converter, VirtualKey = MyVirtualKey.None, AccessKey = null, SupportsNegative = SupportsNegative },
-            new NavCategoryInitializer { ViewMode = ViewMode.Energy, SerializationId = EnergyId, FriendlyName = "Energy", NameResourceKey = "CategoryName_Energy", Glyph = "\uECAD", GroupType = CategoryGroupType.Converter, VirtualKey = MyVirtualKey.None, AccessKey = null, SupportsNegative = PositiveOnly },
-            new NavCategoryInitializer { ViewMode = ViewMode.Area, SerializationId = AreaId, FriendlyName = "Area", NameResourceKey = "CategoryName_Area", Glyph = "\uE809", GroupType = CategoryGroupType.Converter, VirtualKey = MyVirtualKey.None, AccessKey = null, SupportsNegative = PositiveOnly },
-            new NavCategoryInitializer { ViewMode = ViewMode.Speed, SerializationId = SpeedId, FriendlyName = "Speed", NameResourceKey = "CategoryName_Speed", Glyph = "\uEADA", GroupType = CategoryGroupType.Converter, VirtualKey = MyVirtualKey.None, AccessKey = null, SupportsNegative = PositiveOnly },
-            new NavCategoryInitializer { ViewMode = ViewMode.Time, SerializationId = TimeId, FriendlyName = "Time", NameResourceKey = "CategoryName_Time", Glyph = "\uE917", GroupType = CategoryGroupType.Converter, VirtualKey = MyVirtualKey.None, AccessKey = null, SupportsNegative = PositiveOnly },
-            new NavCategoryInitializer { ViewMode = ViewMode.Power, SerializationId = PowerId, FriendlyName = "Power", NameResourceKey = "CategoryName_Power", Glyph = "\uE945", GroupType = CategoryGroupType.Converter, VirtualKey = MyVirtualKey.None, AccessKey = null, SupportsNegative = SupportsNegative },
-            new NavCategoryInitializer { ViewMode = ViewMode.Data, SerializationId = DataId, FriendlyName = "Data", NameResourceKey = "CategoryName_Data", Glyph = "\uF20F", GroupType = CategoryGroupType.Converter, VirtualKey = MyVirtualKey.None, AccessKey = null, SupportsNegative = PositiveOnly },
-            new NavCategoryInitializer { ViewMode = ViewMode.Pressure, SerializationId = PressureId, FriendlyName = "Pressure", NameResourceKey = "CategoryName_Pressure", Glyph = "\uEC4A", GroupType = CategoryGroupType.Converter, VirtualKey = MyVirtualKey.None, AccessKey = null, SupportsNegative = PositiveOnly },
-            new NavCategoryInitializer { ViewMode = ViewMode.Angle, SerializationId = AngleId, FriendlyName = "Angle", NameResourceKey = "CategoryName_Angle", Glyph = "\uF515", GroupType = CategoryGroupType.Converter, VirtualKey = MyVirtualKey.None, AccessKey = null, SupportsNegative = SupportsNegative },
         };
 
         public static void SetCurrentUser(string userId)
@@ -273,7 +256,6 @@ namespace CalculatorApp.ViewModel.Common
         {
             var menuOptions = new List<NavCategoryGroup>();
             menuOptions.Add(CreateCalculatorCategoryGroup());
-            menuOptions.Add(CreateConverterCategoryGroup());
             return menuOptions;
         }
 
@@ -306,8 +288,7 @@ namespace CalculatorApp.ViewModel.Common
 
         public static bool IsViewModeEnabled(ViewMode mode)
         {
-            // Graphing mode may be disabled by policy; other modes are always enabled
-            return mode != ViewMode.Graphing || true; // Simplified: always enabled in managed
+            return mode == ViewMode.Standard;
         }
 
         // This function should only be used when storing the mode to app data.
