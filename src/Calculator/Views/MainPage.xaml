@@ -18,18 +18,18 @@
 
     <Page.Resources>
         <automation:NarratorNotifier x:Name="NarratorNotifier"/>
-        <Style x:Name="CalculatorBaseStyle" TargetType="local:Calculator">
-            <Setter Property="Margin" Value="0,0,0,0"/>
+        <Style x:Name="CalculatorBaseStyle"
+                TargetType="local:Calculator">
+            <Setter Property="Margin"
+                    Value="0,0,0,0"/>
         </Style>
-        <Style x:Name="UnitConverterBaseStyle" TargetType="local:UnitConverter">
-            <Setter Property="Visibility" Value="Collapsed"/>
-            <Setter Property="IsEnabled" Value="False"/>
-            <Setter Property="Margin" Value="0,0,0,0"/>
+        <Style x:Key="NavViewItemStyle"
+                TargetType="muxc:NavigationViewItem">
+            <Setter Property="KeyTipPlacementMode"
+                    Value="Right"/>
         </Style>
-        <Style x:Key="NavViewItemStyle" TargetType="muxc:NavigationViewItem">
-            <Setter Property="KeyTipPlacementMode" Value="Right"/>
-        </Style>
-        <DataTemplate x:Key="NavViewCategoryItemDataTemplate" x:DataType="vmcom:NavCategory">
+        <DataTemplate x:Key="NavViewCategoryItemDataTemplate"
+                x:DataType="vmcom:NavCategory">
             <muxc:NavigationViewItem Style="{StaticResource NavViewItemStyle}"
                                      AccessKey="{x:Bind AccessKey}"
                                      AutomationProperties.AutomationId="{x:Bind AutomationId}"
@@ -38,11 +38,13 @@
                                      Tag="{x:Bind ViewMode}"
                                      IsEnabled="{x:Bind IsEnabled, Mode=OneWay}">
                 <muxc:NavigationViewItem.Icon>
-                    <FontIcon FontFamily="{StaticResource CalculatorFontFamily}" Glyph="{x:Bind Glyph}"/>
+                    <FontIcon FontFamily="{StaticResource CalculatorFontFamily}"
+                            Glyph="{x:Bind Glyph}"/>
                 </muxc:NavigationViewItem.Icon>
             </muxc:NavigationViewItem>
         </DataTemplate>
-        <DataTemplate x:Key="NavViewCategoryGroupItemDataTemplate" x:DataType="vmcom:NavCategoryGroup">
+        <DataTemplate x:Key="NavViewCategoryGroupItemDataTemplate"
+                x:DataType="vmcom:NavCategoryGroup">
             <muxc:NavigationViewItemHeader AutomationProperties.HeadingLevel="Level1"
                                            AutomationProperties.Name="{x:Bind AutomationName}"
                                            Content="{x:Bind Name}"/>
@@ -65,22 +67,26 @@
             <VisualStateGroup x:Name="Mode">
                 <VisualState x:Name="ConverterWide">
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowHeight="{StaticResource AppMinWindowHeight}" MinWindowWidth="640"/>
+                        <AdaptiveTrigger MinWindowHeight="{StaticResource AppMinWindowHeight}"
+                                MinWindowWidth="640"/>
                     </VisualState.StateTriggers>
                 </VisualState>
                 <VisualState x:Name="DockVisible">
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowHeight="{StaticResource AppMinWindowHeight}" MinWindowWidth="560"/>
+                        <AdaptiveTrigger MinWindowHeight="{StaticResource AppMinWindowHeight}"
+                                MinWindowWidth="560"/>
                     </VisualState.StateTriggers>
                 </VisualState>
                 <VisualState x:Name="MinSizeLayout">
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowHeight="{StaticResource AppMinWindowHeight}" MinWindowWidth="{StaticResource AppMinWindowWidth}"/>
+                        <AdaptiveTrigger MinWindowHeight="{StaticResource AppMinWindowHeight}"
+                                MinWindowWidth="{StaticResource AppMinWindowWidth}"/>
                     </VisualState.StateTriggers>
                 </VisualState>
                 <VisualState x:Name="DefaultLayout">
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowHeight="0" MinWindowWidth="0"/>
+                        <AdaptiveTrigger MinWindowHeight="0"
+                                MinWindowWidth="0"/>
                     </VisualState.StateTriggers>
                 </VisualState>
             </VisualStateGroup>
@@ -136,15 +142,6 @@
                     <Border x:Name="CalcHolder">
                         <!-- PLACEHOLDER!!!! This is where the calculator goes when it is delay loaded -->
                     </Border>
-                    <Border x:Name="DateCalcHolder">
-                        <!-- PLACEHOLDER!!!! This is where the date calculator goes when it is delay loaded -->
-                    </Border>
-                    <Border x:Name="GraphingCalcHolder">
-                        <!-- PLACEHOLDER!!!! This is where the graphing calculator goes when it is delay loaded -->
-                    </Border>
-                    <Border x:Name="ConverterHolder">
-                        <!-- PLACEHOLDER!!!! This is where the converter goes when it is delay loaded -->
-                    </Border>
                 </Grid>
 
                 <Grid Height="{StaticResource HamburgerHeight}"
@@ -173,7 +170,8 @@
                             ToolTipService.ToolTip="{utils:ResourceString Name=EnterAlwaysOnTopButton/[using:Windows.UI.Xaml.Controls]ToolTipService/ToolTip}"
                             Visibility="{x:Bind ViewModel.DisplayNormalAlwaysOnTopOption, Mode=OneWay}">
                         <Button.KeyboardAccelerators>
-                            <KeyboardAccelerator Key="Up" Modifiers="Menu"/>
+                            <KeyboardAccelerator Key="Up"
+                                    Modifiers="Menu"/>
                         </Button.KeyboardAccelerators>
                     </Button>
                 </Grid>
@@ -193,8 +191,10 @@
                 </TransitionCollection>
             </Popup.ChildTransitions>
 
-            <Grid x:Name="PopupContent" x:Load="false">
-                <local:Settings BackButtonClick="Settings_BackButtonClick" TitleBarHeight="{x:Bind DoubleToGridLength(AppTitleBar.Height), Mode=OneWay}"/>
+            <Grid x:Name="PopupContent"
+                    x:Load="false">
+                <local:Settings BackButtonClick="Settings_BackButtonClick"
+                        TitleBarHeight="{x:Bind DoubleToGridLength(AppTitleBar.Height), Mode=OneWay}"/>
             </Grid>
         </Popup>
     </Grid>

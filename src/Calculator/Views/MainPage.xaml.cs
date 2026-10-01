@@ -114,18 +114,6 @@ namespace CalculatorApp
             {
                 m_calculator.SetDefaultFocus();
             }
-            if (m_dateCalculator != null && m_dateCalculator.Visibility == Visibility.Visible)
-            {
-                m_dateCalculator.SetDefaultFocus();
-            }
-            if (m_graphingCalculator != null && m_graphingCalculator.Visibility == Visibility.Visible)
-            {
-                m_graphingCalculator.SetDefaultFocus();
-            }
-            if (m_converter != null && m_converter.Visibility == Visibility.Visible)
-            {
-                m_converter.SetDefaultFocus();
-            }
         }
 
         public void SetHeaderAutomationName()
@@ -133,23 +121,12 @@ namespace CalculatorApp
             ViewMode mode = ViewModel.Mode;
             var resProvider = AppResourceProvider.GetInstance();
 
-            string name;
-            if (NavCategory.IsDateCalculatorViewMode(mode))
+            string name = string.Empty;
+            if (NavCategory.IsCalculatorViewMode(mode))
             {
-                name = resProvider.GetResourceString("HeaderAutomationName_Date");
-            }
-            else
-            {
-                string full = string.Empty;
-                if (NavCategory.IsCalculatorViewMode(mode) || NavCategory.IsGraphingCalculatorViewMode(mode))
-                {
-                    full = resProvider.GetResourceString("HeaderAutomationName_Calculator");
-                }
-                else if (NavCategory.IsConverterViewMode(mode))
-                {
-                    full = resProvider.GetResourceString("HeaderAutomationName_Converter");
-                }
-                name = LocalizationStringUtil.GetLocalizedString(full, ViewModel.CategoryName);
+                name = LocalizationStringUtil.GetLocalizedString(
+                    resProvider.GetResourceString("HeaderAutomationName_Calculator"),
+                    ViewModel.CategoryName);
             }
 
             AutomationProperties.SetName(Header, name);
@@ -272,66 +249,17 @@ namespace CalculatorApp
             if (propertyName == nameof(ApplicationViewModel.Mode))
             {
                 ViewMode newValue = ViewModel.Mode;
-                ViewMode previousMode = ViewModel.PreviousMode;
 
                 KeyboardShortcutManager.DisableShortcuts(false);
-
-                switch (newValue)
+                if (newValue == ViewMode.Standard)
                 {
-                    case ViewMode.Standard:
-                        EnsureCalculator();
-                        ViewModel.CalculatorViewModel.HistoryVM.AreHistoryShortcutsEnabled = true;
-                        m_calculator.AnimateCalculator(NavCategory.IsConverterViewMode(previousMode));
-                        ViewModel.CalculatorViewModel.HistoryVM.ReloadHistory(newValue);
-                        break;
-                    case ViewMode.Scientific:
-                        EnsureCalculator();
-                        ViewModel.CalculatorViewModel.HistoryVM.AreHistoryShortcutsEnabled = true;
-                        if (ViewModel.PreviousMode != ViewMode.Scientific)
-                        {
-                            m_calculator.AnimateCalculator(NavCategory.IsConverterViewMode(previousMode));
-                        }
-                        ViewModel.CalculatorViewModel.HistoryVM.ReloadHistory(newValue);
-                        break;
-                    case ViewMode.Programmer:
-                        ViewModel.CalculatorViewModel.HistoryVM.AreHistoryShortcutsEnabled = false;
-                        EnsureCalculator();
-                        if (ViewModel.PreviousMode != ViewMode.Programmer)
-                        {
-                            m_calculator.AnimateCalculator(NavCategory.IsConverterViewMode(previousMode));
-                        }
-                        break;
-                    case ViewMode.Graphing:
-                        EnsureGraphingCalculator();
-                        KeyboardShortcutManager.DisableShortcuts(true);
-                        break;
-                    default:
-                        if (NavCategory.IsDateCalculatorViewMode(newValue))
-                        {
-                            if (ViewModel.CalculatorViewModel != null)
-                            {
-                                ViewModel.CalculatorViewModel.HistoryVM.AreHistoryShortcutsEnabled = false;
-                            }
-                            EnsureDateCalculator();
-                        }
-                        else if (NavCategory.IsConverterViewMode(newValue))
-                        {
-                            if (ViewModel.CalculatorViewModel != null)
-                            {
-                                ViewModel.CalculatorViewModel.HistoryVM.AreHistoryShortcutsEnabled = false;
-                            }
-
-                            EnsureConverter();
-                            if (!NavCategory.IsConverterViewMode(previousMode))
-                            {
-                                m_converter.AnimateConverter();
-                            }
-                        }
-                        break;
+                    EnsureCalculator();
+                    ViewModel.CalculatorViewModel.HistoryVM.AreHistoryShortcutsEnabled = true;
+                    m_calculator.AnimateCalculator(false);
+                    ViewModel.CalculatorViewModel.HistoryVM.ReloadHistory(newValue);
                 }
 
                 ShowHideControls(newValue);
-
                 UpdateViewState();
                 SetDefaultFocus();
             }
@@ -463,46 +391,17 @@ namespace CalculatorApp
         private void ShowHideControls(ViewMode mode)
         {
             var isCalcViewMode = NavCategory.IsCalculatorViewMode(mode);
-            var isDateCalcViewMode = NavCategory.IsDateCalculatorViewMode(mode);
-            var isGraphingCalcViewMode = NavCategory.IsGraphingCalculatorViewMode(mode);
-            var isConverterViewMode = NavCategory.IsConverterViewMode(mode);
 
             if (m_calculator != null)
             {
                 m_calculator.Visibility = BooleanToVisibilityConverter.Convert(isCalcViewMode);
                 m_calculator.IsEnabled = isCalcViewMode;
             }
-
-            if (m_dateCalculator != null)
-            {
-                m_dateCalculator.Visibility = BooleanToVisibilityConverter.Convert(isDateCalcViewMode);
-                m_dateCalculator.IsEnabled = isDateCalcViewMode;
-            }
-
-            if (m_graphingCalculator != null)
-            {
-                m_graphingCalculator.Visibility = BooleanToVisibilityConverter.Convert(isGraphingCalcViewMode);
-                m_graphingCalculator.IsEnabled = isGraphingCalcViewMode;
-            }
-
-            if (m_converter != null)
-            {
-                m_converter.Visibility = BooleanToVisibilityConverter.Convert(isConverterViewMode);
-                m_converter.IsEnabled = isConverterViewMode;
-            }
         }
 
         private void UpdateViewState()
         {
-            // All layout related view states are now handled only inside individual controls (standard, scientific, programmer, date, converter)
-            if (NavCategory.IsConverterViewMode(ViewModel.Mode))
-            {
-                int modeIndex = NavCategoryStates.GetIndexInGroup(ViewModel.Mode, CategoryGroupType.Converter);
-                if (ViewModel.ConverterViewModel != null && modeIndex >= 0 && modeIndex < (ViewModel.ConverterViewModel.Categories?.Count ?? 0))
-                {
-                    ViewModel.ConverterViewModel.CurrentCategory = ViewModel.ConverterViewModel.Categories[modeIndex];
-                }
-            }
+            // Only standard calculator remains enabled in this app.
         }
 
         private void UpdatePanelViewState()
@@ -524,7 +423,7 @@ namespace CalculatorApp
 
         private void OnPageLoaded(object sender, RoutedEventArgs args)
         {
-            if (m_converter == null && m_calculator == null && m_dateCalculator == null && m_graphingCalculator == null)
+            if (m_calculator == null)
             {
                 // We have just launched into our default mode (standard calc) so ensure calc is loaded
                 EnsureCalculator();
@@ -614,53 +513,6 @@ namespace CalculatorApp
             }
         }
 
-        private void EnsureDateCalculator()
-        {
-            if (m_dateCalculator == null)
-            {
-                m_dateCalculator = new DateCalculator();
-                m_dateCalculator.ViewModel = ViewModel.DateCalcViewModel;
-                m_dateCalculator.DataContext = ViewModel.DateCalcViewModel;
-                m_dateCalculator.Name = "dateCalculator";
-                DateCalcHolder.Child = m_dateCalculator;
-            }
-
-            if (m_calculator != null)
-            {
-                m_calculator.CloseHistoryFlyout();
-                m_calculator.CloseMemoryFlyout();
-            }
-        }
-
-        private void EnsureGraphingCalculator()
-        {
-            if (m_graphingCalculator == null)
-            {
-                m_graphingCalculator = new GraphingCalculator
-                {
-                    Name = "GraphingCalculator",
-                    DataContext = ViewModel.GraphingCalcViewModel
-                };
-
-                GraphingCalcHolder.Child = m_graphingCalculator;
-            }
-        }
-
-        private void EnsureConverter()
-        {
-            if (m_converter == null)
-            {
-                // delay loading converter
-                m_converter = new CalculatorApp.UnitConverter
-                {
-                    Name = "unitConverter",
-                    Style = UnitConverterBaseStyle
-                };
-                m_converter.ViewModel = ViewModel.ConverterViewModel;
-                m_converter.DataContext = ViewModel.ConverterViewModel;
-                ConverterHolder.Child = m_converter;
-            }
-        }
 
         private void AnnounceCategoryName()
         {
@@ -703,9 +555,6 @@ namespace CalculatorApp
         }
 
         private Calculator m_calculator;
-        private GraphingCalculator m_graphingCalculator;
-        private UnitConverter m_converter;
-        private DateCalculator m_dateCalculator;
         private readonly AccessibilitySettings m_accessibilitySettings;
     }
 }

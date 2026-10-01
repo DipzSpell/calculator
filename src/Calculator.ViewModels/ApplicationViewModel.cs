@@ -25,15 +25,6 @@ namespace CalculatorApp.ViewModel
         [ObservableProperty]
         private StandardCalculatorViewModel _calculatorViewModel;
 
-        [ObservableProperty]
-        private DateCalculatorViewModel _dateCalcViewModel;
-
-        [ObservableProperty]
-        private GraphingCalculatorViewModel _graphingCalcViewModel;
-
-        [ObservableProperty]
-        private UnitConverterViewModel _converterViewModel;
-
         private ViewMode _mode = ViewMode.None;
 
         [ObservableProperty]
@@ -226,28 +217,6 @@ namespace CalculatorApp.ViewModel
                 }
                 CalculatorViewModel.SetCalculatorType(_mode);
             }
-            else if (NavCategory.IsGraphingCalculatorViewMode(_mode))
-            {
-                if (GraphingCalcViewModel == null)
-                {
-                    GraphingCalcViewModel = new GraphingCalculatorViewModel();
-                }
-            }
-            else if (NavCategory.IsDateCalculatorViewMode(_mode))
-            {
-                if (DateCalcViewModel == null)
-                {
-                    DateCalcViewModel = new DateCalculatorViewModel();
-                }
-            }
-            else if (NavCategory.IsConverterViewMode(_mode))
-            {
-                if (ConverterViewModel == null)
-                {
-                    ConverterViewModel = new UnitConverterViewModel();
-                }
-                ConverterViewModel.Mode = _mode;
-            }
 
             var resProvider = AppResourceProvider.GetInstance();
             CategoryName = resProvider.GetResourceString(NavCategoryStates.GetNameResourceKey(_mode));
@@ -274,15 +243,7 @@ namespace CalculatorApp.ViewModel
         [RelayCommand]
         private void OnCopy()
         {
-            if (NavCategory.IsConverterViewMode(_mode))
-            {
-                ConverterViewModel.CopyCommand.Execute(null);
-            }
-            else if (NavCategory.IsDateCalculatorViewMode(_mode))
-            {
-                DateCalcViewModel.CopyCommand.Execute(null);
-            }
-            else if (NavCategory.IsCalculatorViewMode(_mode))
+            if (NavCategory.IsCalculatorViewMode(_mode))
             {
                 CalculatorViewModel.CopyCommand.Execute(null);
             }
@@ -291,11 +252,7 @@ namespace CalculatorApp.ViewModel
         [RelayCommand]
         private void OnPaste()
         {
-            if (NavCategory.IsConverterViewMode(_mode))
-            {
-                ConverterViewModel.PasteCommand.Execute(null);
-            }
-            else if (NavCategory.IsCalculatorViewMode(_mode))
+            if (NavCategory.IsCalculatorViewMode(_mode))
             {
                 CalculatorViewModel.PasteCommand.Execute(null);
             }
